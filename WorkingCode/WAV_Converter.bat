@@ -1,0 +1,1 @@
+ffmpeg -i <input_path> -f wav <Output_name>.wav 
