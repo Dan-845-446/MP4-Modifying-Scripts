@@ -3,9 +3,7 @@ import ffmpeg
 
 
 def trim_short_video(in_file, out_file, start_trim, end_trim):
-    if os.path.exists(out_file):
-        os.remove(out_file)
-
+    
     in_file_probe_result = ffmpeg.probe(in_file)
     in_file_duration = float(in_file_probe_result.get("format", {}).get("duration", None))
 
@@ -23,9 +21,7 @@ def trim_short_video(in_file, out_file, start_trim, end_trim):
     ffmpeg.run(output)
 
 def trim_long_video(in_file, out_file, start_trim, end_trim):
-    if os.path.exists(out_file):
-        os.remove(out_file)
-
+    
     in_file_probe_result = ffmpeg.probe(in_file)
     in_file_duration = float(in_file_probe_result.get("format", {}).get("duration", None))
 
@@ -45,12 +41,12 @@ def trim_long_video(in_file, out_file, start_trim, end_trim):
 def trim_folder(in_folder, out_folder):
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
-
+       
     for file_name in os.listdir(in_folder):
         if file_name.endswith(".mp4"):
             in_file = os.path.join(in_folder, file_name)
-            out_file = os.path.join(out_folder, "trimmed_" + file_name)
-
+            out_file = os.path.join(out_folder,  "_trimmed_"+file_name)
+           
             in_file_probe_result = ffmpeg.probe(in_file)
             in_file_duration = float(in_file_probe_result.get("format", {}).get("duration", None))
 
@@ -59,10 +55,16 @@ def trim_folder(in_folder, out_folder):
             elif in_file_duration > 10:
                 trim_long_video(in_file, out_file, start_trim=2, end_trim=2)    
             
-            print(f"Trimmed {file_name} to {out_file}")
+            print(f"_trimmed {in_folder}+{file_name} to {out_file}")
         else:
             print("error on file"+file_name)
 
-        
-#User Input
-trim_folder(".venv\input_folder", ".venv\output_folder")
+def folder_organizer(Mother_folder, out_cluster):
+    for folder_name in os.listdir(Mother_folder): 
+        in_folder = os.path.join(Mother_folder, folder_name)
+        out_folder = os.path.join(out_cluster, folder_name + "_trimmed_")
+        trim_folder(in_folder, out_folder)
+
+
+#User Input:
+folder_organizer("Blackcanary-Reviewed_Downloads","Blackcanary-Trimmed")
